@@ -9,7 +9,8 @@ dataset = pd.read_csv("/Users/alessandrococcia/Downloads/ObesityDataSet.csv")
 dataset = dataset.sample(frac=1)
 '''mapping strings to numeric'''
 map = Map()
-dataset = map.mappingDataset(dataset)
+
+dataset = pd.get_dummies(dataset, drop_first=True).astype("float64")
 
 ds = dataset.insert(0, "Bias", np.ones(len(dataset)), True) #Bias row
 
@@ -26,7 +27,6 @@ yStripped = np.float64(y)
 xStripped = np.float64(x)
 
 pseudoinverse = np.linalg.inv(np.matmul(xStripped.T, xStripped))
-
 c = np.matmul(pseudoinverse, np.matmul(xStripped.T, yStripped))
 
 '''TESTING'''
@@ -45,7 +45,6 @@ mae = map.MAE(dtY, predizione)
 print("MSE: ", mse)
 print("RMSE: ", rmse)
 print("MAE: ", mae)
-
 
 '''sklearn'''
 reg = LinearRegression().fit(xStripped, yStripped)
