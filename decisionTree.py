@@ -27,7 +27,7 @@ dt.LearnDecisionTree(dataset, attributes, dataset, column_values)
 dataset = pd.read_csv("/Users/alessandrococcia/Downloads/ObesityDataSet.csv")
 
 '''data manipulation'''
-dataset = dataset.round(1)
+dataset = dataset.round(0)
 dataset = dataset.sample(frac=1, ignore_index=True) #shuffle sample in the training set
 dataset.replace(to_replace=("Insufficient_Weight", "Normal_Weight", "Overweight_Level_I", "Overweight_Level_II"), value=0, inplace=True)
 dataset.replace(to_replace=("Obesity_Type_I", "Obesity_Type_II", "Obesity_Type_III"), value=1, inplace=True)
