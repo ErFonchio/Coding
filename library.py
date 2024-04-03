@@ -78,6 +78,7 @@ class DecisionTree:
         self.LearnDecisionTreeAux_(examples, attributes, parent_examples, column_values)
 
     def LearnDecisionTreeAux_(self, examples, attributes, parent_examples, column_values):
+
         same_classification = self.SameClassification(examples)    
         
         if len(examples.loc[:, examples.columns != self.outputstring]) == 0:
@@ -89,11 +90,10 @@ class DecisionTree:
         else:
             bestattribute = self.Importance(attributes, examples)
             self.label = bestattribute #Seleziono l'attributo migliore
-            
             for value in self.Values1(bestattribute, column_values):
                 remainingexamples = self.Examples(bestattribute, examples, value)
                 tree = DecisionTree(self.outputstring, self.positive, self.negative)
-                attributes_left = self.PopListValue(attributes.copy(), bestattribute)                
+                attributes_left = self.PopListValue(attributes.copy(), bestattribute)               
                 subtree = tree.LearnDecisionTreeAux_(remainingexamples.loc[:, remainingexamples.columns != bestattribute], attributes_left, examples, column_values)
                 self.nodes.append((value, subtree))
         return self

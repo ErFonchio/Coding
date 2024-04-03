@@ -23,25 +23,24 @@ dt = DT('Wait', 'Yes', 'No')
 attributes = dt.PopListValue(dataset.columns.tolist(), 'Wait')
 dt.LearnDecisionTree(dataset, attributes, dataset, column_values)
 
-
-
 '''Obesity'''
 dataset = pd.read_csv("/Users/alessandrococcia/Downloads/ObesityDataSet.csv")
 
 '''data manipulation'''
-dataset = dataset.round(0)
+dataset = dataset.round(1)
+dataset = dataset.sample(frac=1, ignore_index=True) #shuffle sample in the training set
 dataset.replace(to_replace=("Insufficient_Weight", "Normal_Weight", "Overweight_Level_I", "Overweight_Level_II"), value=0, inplace=True)
 dataset.replace(to_replace=("Obesity_Type_I", "Obesity_Type_II", "Obesity_Type_III"), value=1, inplace=True)
 
+
 '''Mappo le stringhe in interi'''
 m = Map()
-dataset = m.mappingDataset(dataset)
+dataset = pd.get_dummies(dataset, drop_first=True).astype(float)
+dataset.sample(frac=1)
 
 TRAIN_TEST_SPLIT_PERCENTAGE = 0.90
 dataset_training = dataset[:int(len(dataset) * TRAIN_TEST_SPLIT_PERCENTAGE)]
 dataset_test = dataset[int(len(dataset) * TRAIN_TEST_SPLIT_PERCENTAGE):]
-
-#print(dataset_test)
 
 d = {}
 for elem in dataset_training.columns:
@@ -65,13 +64,10 @@ count_sklearn = 0
 X = dataset_training.loc[:, dataset_training.columns != 'NObeyesdad']
 Y = dataset_training.loc[:, dataset_training.columns == 'NObeyesdad']
 Z = dataset_test.loc[:, dataset_test.columns != 'NObeyesdad']
-#print(dataset_test.loc[:, dataset_test.columns == 'NObeyesdad'])
-#print(X, Y, Z)
 
-clf = tree.DecisionTreeClassifier()
+clf = tree.DecisionTreeClassifier(criterion='entropy')
 clf = clf.fit(X, Y)
 ret = clf.predict(Z)
-
 
 for i in range(training_len, total_len):
     input = dataset_test.loc[i:i]
@@ -81,6 +77,7 @@ for i in range(training_len, total_len):
     if ret[i-training_len] == dataset_test['NObeyesdad'][i]:
         count_sklearn += 1
 
+#print(dataset)
 print(count_me/test_len)
 print(count_sklearn/test_len)
 
