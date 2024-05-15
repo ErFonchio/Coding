@@ -13,6 +13,10 @@ dataset = dataset.sample(frac=1, ignore_index=True)
 map = Map()
 
 dataset = pd.get_dummies(dataset, drop_first=True, dtype=float)
+
+'''normalization'''
+dataset = (dataset-dataset.mean())/dataset.std()
+
 dataset.insert(0, "Bias", np.ones(len(dataset)), True) #Bias row
 
 TRAIN_TEST_SPLIT_PERCENTAGE = 0.9
@@ -22,8 +26,8 @@ dataset_test = dataset[int(len(dataset) * TRAIN_TEST_SPLIT_PERCENTAGE):]
 x = dataset_training.loc[:, dataset_training.columns != 'Weight']
 y = dataset_training.loc[:, dataset_training.columns == 'Weight']
 
-yStripped = np.float64(y)
-xStripped = np.float64(x)
+yStripped = y.values
+xStripped = x.values
 
 pseudoinverse = np.linalg.inv(np.matmul(xStripped.T, xStripped))
 c = np.matmul(pseudoinverse, np.matmul(xStripped.T, yStripped))
@@ -33,7 +37,7 @@ dt = dataset_test
 dtX = dt.loc[:, dt.columns != 'Weight']
 dtY = dt.loc[:, dt.columns == 'Weight']
 
-dtY = np.float64(dtY)
+dtY = dtY.values
 predizione = np.matmul(dtX, c)
 
 '''Stima errore'''
@@ -47,7 +51,8 @@ print("MAE: ", mae)
 
 '''sklearn'''
 reg = LinearRegression().fit(xStripped, yStripped)
-scikit_predict = reg.predict(dtX)
+scikit_predict = reg.predict(dtX.values)
+
 print("MSE_sklearn: ", map.MSE(dtY, scikit_predict))
 print("RMSE_sklearn: ", map.RMSE(dtY, scikit_predict))
 print("MAE_sklearn: ", map.MAE(dtY, scikit_predict))

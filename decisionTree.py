@@ -35,8 +35,8 @@ dataset.replace(to_replace=("Obesity_Type_I", "Obesity_Type_II", "Obesity_Type_I
 
 '''Mappo le stringhe in interi'''
 m = Map()
-dataset = pd.get_dummies(dataset, drop_first=True).astype(float)
-dataset.sample(frac=1)
+dataset = pd.get_dummies(dataset, drop_first=True, dtype=float)
+
 
 TRAIN_TEST_SPLIT_PERCENTAGE = 0.90
 dataset_training = dataset[:int(len(dataset) * TRAIN_TEST_SPLIT_PERCENTAGE)]
@@ -64,7 +64,6 @@ count_sklearn = 0
 X = dataset_training.loc[:, dataset_training.columns != 'NObeyesdad']
 Y = dataset_training.loc[:, dataset_training.columns == 'NObeyesdad']
 Z = dataset_test.loc[:, dataset_test.columns != 'NObeyesdad']
-
 clf = tree.DecisionTreeClassifier(criterion='entropy')
 clf = clf.fit(X, Y)
 ret = clf.predict(Z)

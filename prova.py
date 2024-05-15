@@ -1,3 +1,5 @@
-lista = [1, 1, 1, 1]
-for i, elem in lista:
-    print(i, elem)
+import numpy as np
+l = [[1, 2, 3], [1, 1, 1]]
+l = np.array(l)
+print(l.T.shape)
+print(l.shape)
